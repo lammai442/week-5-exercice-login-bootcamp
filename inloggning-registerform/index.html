@@ -25,14 +25,15 @@
     <!-- Register form -->
     <form id = "registerForm" class="form">
         <h2 class="title">Registrera mig</h2>
-        <label class="input-label">Användernamn
+        <p id="errorMsg-register" class="error-msg"></p>
+        <label class="input-label" id="label">Användarnamn
             <input type="text" id="userName">
         </label>
         <label class="input-label">Lösenord
-            <input type="text" id="password">
+            <input type="password" id="password">
         </label>
         <label class="input-label">Bekräfta lösenord
-            <input type="text" id="passwordConfirm">
+            <input type="password" id="passwordConfirm">
         </label>
         <label class="input-label">Jag godkänner att registrera mig!
             <input type="checkbox" id="checkbox" class="checkbox">

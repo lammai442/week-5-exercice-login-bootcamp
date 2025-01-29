@@ -46,3 +46,8 @@ body {
 .checkbox {
     align-self: flex-start;
 }
+
+.error-msg {
+    color: red;
+    font-size: large;
+}
