@@ -7,7 +7,7 @@ formRef.addEventListener('submit', submitForm);
 
 // DOM-manipulation för att lägga in en knapp.
 let removeLocaleStorage = document.createElement('button');
-// Läägger till ID till knappen
+// Lägger till ID till knappen
 removeLocaleStorage.id = 'removeLocalStorage';
 // Lägger till textinnehåll till den. Annars är den tom.
 removeLocaleStorage.textContent = 'Ta bort all data';
@@ -20,8 +20,13 @@ let removeDataInputRef = document.querySelector('#removeDataInput');
 removeLocaleStorage.addEventListener('click', (event) => {
     // Denna gör så att formen inte uppdaterar sig själv.
     event.preventDefault();
-    // Anropar funktionen som tar emot ett värde och rensar den.
-    removeKeyFromLocalStorage(removeDataInputRef.value.toLowerCase());
+
+    // Här kommer en kontroll där funktionen för att hämta data används och om det värdet som användaren har lagt in i input inte är en tom array så kommer den köras här. Då kommer den kolla ifall inputvärdet matchar det keyname som finns och då körs funktionen removeKeyFromLocalStorage och kopplat med det input som angavs.
+    if (getDataFromLocalStorage(removeDataInputRef.value.toLowerCase()).length > 0) {
+        console.log('hej');
+
+        removeKeyFromLocalStorage(removeDataInputRef.value.toLowerCase());
+    }
 });
 
 // Funktionen gör så att sidan inte uppdaterar sig själv. Här kommer parametern att spela roll då den måste läggas en funktion på den inkommande lyssnaren.
@@ -33,7 +38,9 @@ function submitForm(event) {
     if (validateForm()) {
         console.log('The form is complete!');
         // Här sparas det som finns i userInput i localStorage. Det sparas som en array genom att man måste ange JSON.stringify
-        localStorage.setItem('more', JSON.stringify(userInput));
+        let usersArray = getDataFromLocalStorage('more');
+        usersArray.push(userInput);
+        localStorage.setItem('more', JSON.stringify(usersArray));
 
         // Om den är false så skickas inte formuläret
     } else {
@@ -53,7 +60,6 @@ function validateForm() {
     const emailRef = document.querySelector('#email');
     const msgRef = document.querySelector('#msg');
     const checkBoxConditionsRef = document.querySelector('#checkBoxConditions');
-    const removeLocalStorageRef = document.querySelector('#removeLocalStorage');
 
     userInput.name = nameRef.value;
     userInput.phone = phoneRef.value;
@@ -93,13 +99,16 @@ function validateForm() {
                 message: 'Du måste bocka i att du godkänner villkoren',
                 nodeRef: checkBoxConditionsRef,
             };
-        } else if (removeLocalStorageRef.value === '')
-            // Här nollställs errorMsg då den har gått igenom alla kontroller.
-            document.querySelector('#errorMsg').textContent = '';
+        }
+
+        // Här nollställs errorMsg då den har gått igenom alla kontroller.
+        document.querySelector('#errorMsg').textContent = '';
 
         // Om alla ovanstående try går igenom och är falska så kommer denna metod att returnera true.
         return true;
     } catch (error) {
+        console.log(error.message);
+
         // Här görs en kontroll ifall det är en array som skickas in. Och om det är det så går den in i denna ifsats som måste loopa igenom båda
         if (Array.isArray(error.nodeRef)) {
             error.nodeRef.forEach((ref) => {
@@ -123,8 +132,8 @@ function validateForm() {
 
 // Funktionen som hämtar all data från localstorage
 function getDataFromLocalStorage(input) {
-    // Först måste datan hämtas hem till en variabel.
-    let getData = localStorage.getItem(input);
+    // Först måste datan hämtas hem till en variabel. I nedanstående fall så kommer den först kolla om den 'input' som användaren lagt in finns men om det inte finns så kommer den tilldelas en tom array.
+    let getData = localStorage.getItem(input) || '[]';
     return JSON.parse(getData);
 }
 
