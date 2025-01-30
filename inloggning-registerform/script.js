@@ -28,16 +28,22 @@ function swapRegisterLoginForm(event) {
 // LOGIN-FORM //
 const userNameLoginRef = document.querySelector('#userNameLogin');
 const passwordLoginRef = document.querySelector('#passwordLogin');
-const loginBtnRef = document.querySelector('#loginBtn');
+const firstNameRef = document.querySelector('#firstName');
 
+
+const loginBtnRef = document.querySelector('#loginBtn');
 loginBtnRef.addEventListener('click', (event) => {
     event.preventDefault();
 
     
     if(validateLogin()) {
+        // Gömmer loginformuläret
         loginFormRef.classList.toggle('d-none');
+        // Skapar en välkomsmeddelande
         let welcomeMsg = document.createElement('h2');
-        welcomeMsg.textContent = `Välkommen ${userNameLoginRef.value}`;
+        // Fyller den med namnet på den inloggade genom att skicka med godkända användarnamnet och får returnad ett namn från getLoginName().
+        welcomeMsg.textContent = `Välkommen ${getLoginName(userNameLoginRef.value)}`;
+        // Stoppa in nya elementet i bodyn så att den syns.
         let bodyRef = document.querySelector('body')
         bodyRef.appendChild(welcomeMsg);
     }
@@ -47,6 +53,7 @@ function validateLogin () {
     let titleLoginRef = document.querySelector('#titleLogin').insertAdjacentElement('afterend', infoMsg)
 
     infoMsg.classList.add('error-msg');
+
     try {
         if(!doesUserExist(userNameLoginRef.value)) {
             throw {
@@ -54,11 +61,16 @@ function validateLogin () {
                 nodeRef: userNameLoginRef
             }
         }
-        else if ()
+        else if (isPasswordIncorrect(userNameLoginRef.value, passwordLoginRef.value)) {
+            throw {
+                message: 'Lösenordet stämmer inte med kontot',
+                nodeRef: passwordLoginRef
+            }
+        }
         return true;
     } catch (error) {
         infoMsg.textContent = error.message
-        nodeRef.focus();
+        error.nodeRef.focus();
     } return false;
 };
 
@@ -153,12 +165,14 @@ function validateRegistration() {
 console.log(users);
 
 function saveUserToLocalStorage() {
+    // Skapar ett tomt objekt varje gång för att lägga in den nya inputsen från användaren.
     let userObject = {};
     // Här sparas samtliga datainput som gjorts i ett nytt objekt.
     userObject.userName = userNameRef.value;
     userObject.password = passwordRef.value;
     userObject.passwordConfirmed = passwordConfirmRef.value;
-    // console.log(userObject);
+    userObject.firstName = firstNameRef.value;
+    
     // // Här läggs objekten in i arrayen users.
     // users.push(userObject);
     // Här hämtas den befintliga arrayen i localStorage och argumentetet 'users' som ska sökas efter.
@@ -177,13 +191,14 @@ function getDataFromLocalStorage(input) {
     return JSON.parse(getData);
 }
 
+// En timer som tar bort ett element efter en viss angiven sekunder. Används för att ta bort p-elementet när ett konto har skapats.
 function removeElementTimer(element, time) {
-
     setTimeout(() => {
         element.remove();
     }, time)
 };
 
+// Funktionen som kollar ifall användarnamnet finns i LocalStorage
 function doesUserExist(input) {
     let storedData = JSON.parse(localStorage.getItem('users'));
    
@@ -192,5 +207,31 @@ function doesUserExist(input) {
         return true
     } else {
         return false
+    }
+}
+
+function isPasswordIncorrect(userName, password) {
+    // Hämtar hem datan från local storage och sparar den i storeData som en array.
+    let users = JSON.parse(localStorage.getItem('users'));
+
+    // Här loopas det genom all för att se ifall det finns någon matchning i varje objekt
+    for(let user of users) {
+        // Om det matchas så skickas false då vi kontrollerar i denna funktion om lösenordet är inkorrekt.
+        if(user.userName === userName && user.password === password) {
+            return false
+        }
+    }
+    // Om den inte matchar så kommer det returneras true och då kommer det att köras en error i validateLogin
+    return true;
+
+}
+
+function getLoginName(userName) {
+    const users = JSON.parse(localStorage.getItem('users'));
+
+    for (let user of users) {
+        if (user.userName === userName) {
+            return user.firstName;
+        }
     }
 }
