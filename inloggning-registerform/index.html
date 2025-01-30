@@ -10,7 +10,7 @@
 <body>
     <!-- Login form -->
     <form id = "loginForm" class="form ">
-        <h1 class="title">Logga in</h1>
+        <h1 id='titleLogin' class="title">Logga in</h1>
         <label class="input-label">Användarnamn
             <input type="text" id="userNameLogin">
         </label>
@@ -19,13 +19,13 @@
         </label>
         <label>
             <button id = 'loginBtn' class="submit-btn">Logga in</button>
-            <button id = 'registerAccountBtn' class="submit-btn">Registrera konto</button>
+            <button id = 'toRegisterFormBtn' class="submit-btn">Registrera konto</button>
         </label>
     </form>
     <!-- Register form -->
     <form id = "registerForm" class="form">
-        <h2 class="title">Registrera mig</h2>
-        <p id="errorMsg-register" class="error-msg"></p>
+        <h2 id=registerTitle class="title">Registrera mig</h2>
+        <!-- <p id="errorMsgRegister" class="error-msg"></p> -->
         <label class="input-label" id="label">Användarnamn
             <input type="text" id="userName">
         </label>
@@ -39,7 +39,7 @@
             <input type="checkbox" id="checkbox" class="checkbox">
         </label>
         <label>
-            <button id='registerBtn'class="submit-btn">Registrera mig</button>
+            <button id='registerBtn' class="submit-btn">Registrera mig</button>
             <button class="submit-btn">Till logga in</button>
         </label>
     </form>
